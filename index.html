@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>모바일 신분증</title>
+
+<style>
+:root {
+    --bg-color: #f2f2f2;
+    --card-bg: #ffffff;
+    --time-gradient: linear-gradient(90deg, #6EA9F5 0%, #5B40F7 100%);
+    --timer-grey: #a0a0a0;
+    --timer-blue: #5e9fff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #e5e5e5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    width: 375px;
+    height: 100vh;
+    max-height: 812px;
+    background-color: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+header {
+    position: relative;
+    padding: 10px 20px 0 20px;
+    text-align: center;
+    background-color: #fff;
+    z-index: 10;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 25px;
+    font-size: 15px;
+    color: #bbb;
+    font-weight: 300;
+}
+
+.nav-tabs .active {
+    color: #000;
+    font-weight: 500;
+    border-bottom: 3px solid #333;
+}
+
+.card-wrapper {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+}
+
+.id-card {
+    width: 290px;
+    height: 440px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profile-img {
+    width: 110px;
+    height: 140px;
+    margin: 0 auto 5px;
+    display: block;
+    object-fit: cover;
+}
+
+.info-section {
+    display: flex;
+    justify-content: space-between;
+    min-height: 125px;
+    margin-top: 10px;
+}
+
+.name { font-size: 20px; font-weight: bold; margin-bottom: 6px; }
+.birth { font-size: 13px; font-weight: 700; margin-top: 15px; }
+.address { font-size: 11px; color: #444; line-height: 1.3; }
+.dots { letter-spacing: 3px; font-weight: bold; }
+
+.qr-image {
+    width: 105px;
+    height: 105px;
+}
+
+.toggle-area {
+    height: 105px;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-btn {
+    width: 42px;
+    height: 24px;
+    background: #eee;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.toggle-btn.on { background: #333; }
+
+.toggle-circle {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+}
+
+.toggle-btn.on .toggle-circle { left: 20px; }
+
+.issuer {
+    font-size: 11px;
+    color: #bbb;
+    margin-bottom: 10px;
+}
+
+.progress-container {
+    width: 100%;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    background: var(--time-gradient);
+    transform-origin: left;
+    animation: timer 30s linear infinite;
+}
+
+.reset-anim { animation: none !important; }
+
+@keyframes timer {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+.timer-text {
+    font-size: 11px;
+    color: var(--timer-grey);
+}
+
+.timer-text span {
+    color: var(--timer-blue);
+    font-weight: bold;
+}
+
+.bottom-btn {
+    height: 52px;
+    background: #222;
+    color: white;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.hidden { visibility: hidden; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<header>
+<div class="header-title">모바일신분증</div>
+<div class="nav-tabs">
+<div class="active">주민등록증</div>
+<div>운전면허증</div>
+</div>
+</header>
+
+<div class="card-wrapper">
+<div class="id-card">
+<div class="card-content">
+
+<img src="https://i.ibb.co/TDBxdLR6/3-5-4-5cm.jpg" class="profile-img">
+
+<div class="info-section">
+<div id="userData"></div>
+<div id="actionArea"></div>
+</div>
+
+<div>
+<div id="issuerArea" class="issuer hidden">울산광역시 북구청장</div>
+<div class="progress-container">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+<div class="timer-text">남은시간 <span id="timerCount">30초</span></div>
+</div>
+
+</div>
+
+<button class="bottom-btn" id="mainBtn" onclick="toggleMode()">상세정보 표시</button>
+</div>
+</div>
+</div>
+
+<script>
+let isQRMode = true;
+let isDetailOn = false;
+let timeLeft = 30;
+
+const userData = document.getElementById('userData');
+const actionArea = document.getElementById('actionArea');
+const mainBtn = document.getElementById('mainBtn');
+const issuerArea = document.getElementById('issuerArea');
+const timerCount = document.getElementById('timerCount');
+const progressBar = document.getElementById('progressBar');
+
+function startTimer() {
+setInterval(() => {
+timeLeft--;
+if (timeLeft < 0) {
+timeLeft = 30;
+progressBar.classList.add('reset-anim');
+void progressBar.offsetWidth;
+progressBar.classList.remove('reset-anim');
+}
+timerCount.innerText = timeLeft + "초";
+}, 1000);
+}
+
+function render() {
+if (isQRMode) {
+userData.innerHTML = `
+<div class="name">문주빈</div>
+<div class="birth">06.02.13</div>
+<div class="address">울산광역시 북구</div>`;
+actionArea.innerHTML =
+`<img src="https://api.qrserver.com/v1/create-qr-code/?size=105x105&data=LeeYeJi" class="qr-image">`;
+mainBtn.innerText = "상세정보 표시";
+issuerArea.classList.add('hidden');
+} else {
+issuerArea.classList.remove('hidden');
+
+if (!isDetailOn) {
+userData.innerHTML = `
+<div class="name">문주빈</div>
+<div class="birth">060213 - <span class="dots">•••••••</span></div>
+<div class="address">울산광역시 북구</div>
+<div class="address dots">••••••••••••••</div>
+<div class="address" style="margin-top:15px;">20.26.01.05</div>`;
+} else {
+userData.innerHTML = `
+<div class="name">문주빈</div>
+<div class="birth">060213 - 3853214</div>
+<div class="address">울산광역시 북구 천곡길 165</div>
+<div class="address">102동 1204호 농소대동한마음타운</div>
+<div class="address" style="margin-top:15px;">20.26.01.05</div>`;
+}
+
+actionArea.innerHTML =
+`<div class="toggle-area">
+<div class="toggle-btn ${isDetailOn ? 'on' : ''}" onclick="toggleDetail(event)">
+<div class="toggle-circle"></div>
+</div>
+</div>`;
+
+mainBtn.innerText = "QR정보 표시";
+}
+}
+
+function toggleMode() {
+isQRMode = !isQRMode;
+render();
+}
+
+function toggleDetail(e) {
+e.stopPropagation();
+isDetailOn = !isDetailOn;
+render();
+}
+
+render();
+startTimer();
+</script>
+
+</body>
+</html>
